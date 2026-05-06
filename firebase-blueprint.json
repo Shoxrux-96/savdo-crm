@@ -1,0 +1,146 @@
+{
+  "entities": {
+    "Store": {
+      "title": "Store",
+      "description": "Information about a digitized shop or distributor.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the entity." },
+        "ownerId": { "type": "string", "description": "User ID of the primary owner." },
+        "tin": { "type": "string", "description": "Tax Identification Number (STIR)." },
+        "region": { "type": "string" },
+        "district": { "type": "string" },
+        "location": { 
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" },
+            "address": { "type": "string" }
+          }
+        },
+        "phone": { "type": "string" },
+        "subscriptionStatus": { "type": "string", "enum": ["active", "inactive", "trial"], "description": "Subscription status." },
+        "type": { "type": "string", "enum": ["store", "distributor"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "ownerId", "tin", "type"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Item in the store's or distributor's inventory.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "cost": { "type": "number" },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "lowStockThreshold": { "type": "number" },
+        "ownerId": { "type": "string", "description": "ID of store or distributor" },
+        "type": { "type": "string", "enum": ["store", "distributor", "marketplace"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "sku", "price", "quantity", "ownerId"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Information about application users and their roles.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "tin": { "type": "string", "description": "Linked organization TIN (STIR)" },
+        "role": { "type": "string", "enum": ["super_admin", "store_owner", "distributor"] },
+        "level": { "type": "string", "enum": ["admin", "employee"] },
+        "position": { "type": "string" },
+        "region": { "type": "string" },
+        "district": { "type": "string" },
+        "entityId": { "type": "string", "description": "ID of the associated Store or Distributor" },
+        "status": { "type": "string", "enum": ["active", "suspended"] }
+      },
+      "required": ["email", "role", "status"]
+    },
+    "Plan": {
+      "title": "Subscription Plan",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "features": { "type": "array" },
+        "maxProducts": { "type": "number" },
+        "commission": { "type": "number" }
+      },
+      "required": ["name", "price"]
+    },
+    "Payment": {
+      "title": "Subscription Payment",
+      "type": "object",
+      "properties": {
+        "storeId": { "type": "string" },
+        "entityName": { "type": "string" },
+        "amount": { "type": "number" },
+        "method": { "type": "string", "enum": ["CASH", "CARD", "TRANSFER"] },
+        "status": { "type": "string", "enum": ["pending", "verified", "failed"] },
+        "date": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["storeId", "amount", "method", "status"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "A transaction log.",
+      "type": "object",
+      "properties": {
+        "storeId": { "type": "string" },
+        "items": { 
+          "type": "array",
+          "description": "List of items sold."
+        },
+        "totalAmount": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["cash", "card", "credit"] },
+        "customerId": { "type": "string" },
+        "staffId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["storeId", "items", "totalAmount", "paymentMethod", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "UserProfile",
+      "description": "App users and roles."
+    },
+    "plans": {
+      "schema": "Plan",
+      "description": "Subscription tiers."
+    },
+    "stores": {
+      "schema": "Store",
+      "description": "Collection of shops."
+    },
+    "distributors": {
+      "schema": "Store",
+      "description": "Wholesale entities."
+    },
+    "marketplace": {
+      "schema": "Product",
+      "description": "Products for sale by distributors."
+    },
+    "stores/{storeId}/products": {
+      "schema": "Product",
+      "description": "Inventory for a specific store."
+    },
+    "stores/{storeId}/sales": {
+      "schema": "Sale",
+      "description": "Sales history for a specific store."
+    },
+    "payments": {
+      "schema": "Payment",
+      "description": "Subscription payments history."
+    }
+  }
+}

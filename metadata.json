@@ -1,0 +1,13 @@
+{
+  "name": "StoreControl CRM & POS",
+  "description": "Do'konlar uchun ombor nazorati, kassa jarayonlari, real vaqt rejimidagi hisobotlar va obuna tizimiga ega kompleks CRM tizimi.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "inventory_management",
+    "pos_system",
+    "barcode_scanning",
+    "reporting_analytics"
+  ]
+}
